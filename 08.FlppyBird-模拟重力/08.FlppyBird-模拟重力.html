@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+    <title>08.FlppyBird-点击飞起</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+
+    <script src="../lib/lib.js"></script>
+</head>
+<body>
+<div id="bg">
+    <img id="bg_1" src="../images/bird/background.png">
+    <img id="bg_2" src="../images/bird/background.png">
+</div>
+<div id="land">
+    <img id="land_1" src="../images/bird/land.png">
+    <img id="land_2" src="../images/bird/land.png">
+</div>
+<img id="bird" src="../images/bird/bird_01.png">
+</body>
+
+<script>
+	/**
+	 * 屏幕宽高
+	 * @type {{width: number, height: number}}
+	 */
+	const winSize = {
+		width: document.body.clientWidth,
+		height: document.body.clientHeight,
+	}
+</script>
+<script>
+	class Bird extends GameObject {
+
+		speed;  // bird的速度 每次移动多少距离
+
+		gravity;    // 重力加速度
+
+		constructor(id, gravity = 0.2, speed = 0) {
+			super(id);
+			this.speed = speed; // 保存speed
+			this.gravity = gravity; // 保存gravity
+
+			// 放到屏幕中间
+			const { width, height } = this.getSize();
+			this.setPosition(
+				(winSize.height - height) / 2,
+				(winSize.width - width) / 2,
+			);
+		}
+
+		update() {
+			super.update();
+
+			let top = this.getPosition().top
+
+			// v = v0 + a * t²
+			this.speed += this.gravity; // 速度 = 速度 + 加速度 * 时间²
+
+			top += this.speed;  // 更新位置
+
+			this.setPosition(top);
+		}
+	}
+
+	/**
+     * 滚动器
+	 */
+	class ScrollMgr extends GameObject {
+
+		speed; // 滚动速度
+		bg1;    // bg1
+		bg2;    // bg2
+
+		constructor(id, bg1, bg2, speed = 5) {
+			super(id);
+			this.bg1 = bg1;
+			this.bg2 = bg2;
+			this.speed = speed;
+
+			bg1.setPosition(winSize.height - bg1.getSize().height); // 放在底部
+			bg2.setPosition(winSize.height - bg2.getSize().height); // 放在底部
+		}
+
+		update() {
+			super.update();
+			// 获取一些参数
+			let { top: bg1Top, left: bg1Left } = this.bg1.getPosition();
+			const bg1Width = this.bg1.getSize().width;
+			const bg2Top = this.bg2.getPosition().top;
+
+			// 计算位置
+			bg1Left -= this.speed;  // 计算位置
+			this.bg1.setPosition(bg1Top, bg1Left);  // 设置bg1的位置
+			this.bg2.setPosition(bg2Top, bg1Left + this.bg1.getSize().width);   // bg2跟在bg1后面
+
+			// 如果超出屏幕则交换bg1和bg2，为了做到循环滚动
+			if (bg1Left <= -bg1Width) {
+				const temp = this.bg1;
+				this.bg1 = this.bg2;
+				this.bg2 = temp;
+			}
+		}
+	}
+</script>
+
+<script>
+	// 创建鸟
+	const bird = new Bird("bird");
+
+	// 创建背景
+	const bg1 = new GameObject("bg_1");
+	const bg2 = new GameObject("bg_2");
+	const bgMgr = new ScrollMgr("bg", bg1, bg2, 2);
+
+	// 创建地面
+	const land1 = new GameObject("land_1");
+	const land2 = new GameObject("land_2");
+	const landMgr = new ScrollMgr("land", land1, land2, 5);
+
+	// 将背景放在地面的上面，因为默认top是0，子节点在内部定位在底部，所以只需要把背景定位在负的land的高度就可以了
+	bgMgr.setPosition(-land1.getSize().height);
+</script>
+
+<script>
+	// 使用mousedown监听鼠标按下，并获得鼠标点击的位置
+	const mouseDown = (e) => {
+		bird.speed = -8;
+	}
+	document.addEventListener('mousedown', mouseDown);
+</script>
+
+<script>
+	/**
+	 * 数据更新
+	 */
+	function update() {
+		// bird更新
+		bird.update();
+
+		// 背景更新
+		bgMgr.update();
+		bg1.update();
+		bg2.update();
+
+		// 地面更新
+		landMgr.update();
+		land1.update();
+		land2.update();
+	}
+
+	/**
+	 * 渲染更新
+	 */
+	function render() {
+		// bird渲染
+		bird.render();
+
+		// 背景渲染
+		bgMgr.render();
+		bg1.render();
+		bg2.render();
+
+		// 地面渲染
+		landMgr.render();
+		land1.render();
+		land2.render();
+	}
+
+	function loop() {
+		requestAnimationFrame(loop);    // 循环调用requestAnimationFrame
+		update();   // 先数据更新
+		render();   // 后渲染更新
+	}
+
+	loop();
+
+</script>
+</html>
