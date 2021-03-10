@@ -81,14 +81,9 @@
 			this.bg1 = bg1;
 			this.bg2 = bg2;
 			this.speed = speed;
-		}
-
-		async start() {
-			super.start();
 
 			this.addChild(this.bg1);
 			this.addChild(this.bg2);
-
 		}
 
 		ready() {
@@ -140,7 +135,7 @@
 			return Promise.all(promises);
 		}
 
-		async start() {
+		async ready() {
 			// 创建鸟
 			const bird = this.bird = new Bird();
 
