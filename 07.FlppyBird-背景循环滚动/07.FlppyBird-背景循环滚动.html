@@ -47,13 +47,16 @@
 		constructor(id, speed = 15) {
 			super(id);
 			this.speed = speed; // 保存speed
-			this.setPosition(150, 150); // 给个默认位置
+
+			// 给个默认位置
+			this.top = 150;
+			this.left = 150;
 		}
 
 		update() {
 			super.update();
 
-			const { top, left } = this.getPosition();
+			const { top, left } = this;
 			const speed = this.speed;
 
 			// 计算新的top
@@ -63,9 +66,9 @@
 
 				// 如果速度过快，本次移动直接过头了(即差值<速度)，就直接移动到指定top
 				if (Math.abs(dis) < speed) {
-					this.transform.position.top = clickPos.top;
+					this.top = clickPos.top;
 				} else {
-					this.transform.position.top = top + dir * speed;    // 计算新的top，新的位置 = 之前的位置 + 方向 * 速度
+					this.top = top + dir * speed;    // 计算新的top，新的位置 = 之前的位置 + 方向 * 速度
 				}
 			}
 
@@ -75,9 +78,9 @@
 				const dir = dis > 0 ? 1 : -1;
 
 				if (Math.abs(dis) < speed) {
-					this.transform.position.left = clickPos.left;
+					this.left = clickPos.left;
 				} else {
-					this.transform.position.left = left + dir * speed;
+					this.left = left + dir * speed;
 				}
 			}
 		}
@@ -95,21 +98,20 @@
 			this.bg2 = bg2;
 			this.speed = speed;
 
-			bg1.setPosition(winSize.height - bg1.getSize().height); // 放在底部
-			bg2.setPosition(winSize.height - bg2.getSize().height); // 放在底部
+			bg1.top = winSize.height - bg1.size.height; // 放在底部
+			bg2.top = winSize.height - bg2.size.height; // 放在底部
 		}
 
 		update() {
 			super.update();
 			// 获取一些参数
-			let { top: bg1Top, left: bg1Left } = this.bg1.getPosition();
-			const bg1Width = this.bg1.getSize().width;
-			const bg2Top = this.bg2.getPosition().top;
+			let bg1Left = this.bg1.left;
+			const bg1Width = this.bg1.size.width;
 
 			// 计算位置
 			bg1Left -= this.speed;  // 计算位置
-			this.bg1.setPosition(bg1Top, bg1Left);  // 设置bg1的位置
-			this.bg2.setPosition(bg2Top, bg1Left + this.bg1.getSize().width);// bg2跟在bg1后面
+            this.bg1.left = bg1Left;    // 设置bg1的位置
+			this.bg2.left = bg1Left + this.bg1.size.width;  // bg2跟在bg1后面
 
 			// 如果超出屏幕则交换bg1和bg2，为了做到循环滚动
 			if (bg1Left <= -bg1Width) {
@@ -152,7 +154,7 @@
 	const landMgr = new ScrollMgr("land", land1, land2, 5);
 
 	// 将背景放在地面的上面，因为默认top是0，子节点在内部定位在底部，所以只需要把背景定位在负的land的高度就可以了
-	bgMgr.setPosition(-land1.getSize().height);
+	bgMgr.top = -land1.size.height;
 
 	/**
 	 * 数据更新
