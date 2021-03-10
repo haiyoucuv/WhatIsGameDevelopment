@@ -51,10 +51,10 @@
 			this.speed = speed; // 保存speed
 			this.gravity = gravity; // 保存gravity
 
-			// 放到屏幕中间
+			// 放到合适的位置
 			const { width, height } = this.getSize();
 			this.setPosition(
-				(winSize.height - height) / 2,
+				(winSize.height - height) / 2 - 100,
 				(winSize.width - width) / 2,
 			);
 		}
