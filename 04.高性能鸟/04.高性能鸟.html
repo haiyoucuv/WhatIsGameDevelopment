@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+    <title>04.高性能鸟</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #bird {
+            /* 大小 */
+            width: 50px;
+            height: 50px;
+
+            /* 颜色 */
+            background-color: #f00;
+
+            /* 位置 */
+            position: absolute;
+
+            /* 旋转、缩放等属性 */
+            transform: scale(1, 1) rotate(45deg);
+
+            /* 锚点 */
+            transform-origin: center;
+        }
+
+    </style>
+</head>
+<body>
+<div id="bird"></div>
+</body>
+
+<script>
+	const bird = document.getElementById("bird");
+
+	const speed = 15;   // bird的速度 每次移动多少距离
+	const pos = {   // bird的位置  bird当前的位置
+		top: 150,
+		left: 150,
+	}
+
+	const clickPos = { // 鼠标点击的位置 bird将要的到达的位置
+		top: 150,
+		left: 150,
+	}
+
+	// 使用mousedown监听鼠标按下，并获得鼠标点击的位置
+	const mouseDown = (e) => {
+		// 记录bird将要到达的位置，使用动画慢慢到达
+		clickPos.top = e.clientY;
+		clickPos.left = e.clientX;
+	}
+	document.addEventListener('mousedown', mouseDown);
+
+	/**
+	 * 计算Bird的位置(数据更新)
+	 */
+	function update() {
+		// 计算新的top
+		if (pos.top !== clickPos.top) {
+			const dis = clickPos.top - pos.top; // 计算差值
+			const dir = dis > 0 ? 1 : -1;  // 计算在top上移动的方向 1 正向移动 或 -1 反向移动;
+
+			// 如果速度过快，本次移动直接过头了(即差值<速度)，就直接移动到指定top
+			if (Math.abs(dis) < speed) {
+				pos.top = clickPos.top;
+			} else {
+				pos.top = pos.top + dir * speed;    // 计算新的top，新的位置 = 之前的位置 + 方向 * 速度
+			}
+		}
+
+		// 用相同的方式计算left
+		if (pos.left !== clickPos.left) {
+			const dis = clickPos.left - pos.left;
+			const dir = dis > 0 ? 1 : -1;
+
+			if (Math.abs(dis) < speed) {
+				pos.left = clickPos.left;
+			} else {
+				pos.left = pos.left + dir * speed;
+			}
+		}
+	}
+
+	/**
+	 * 更新显示对象位置(渲染)
+	 */
+	function render() {
+		bird.style.top = pos.top + "px";
+		bird.style.left = pos.left + "px";
+	}
+
+	function loop() {
+		requestAnimationFrame(loop);    // 循环调用requestAnimationFrame
+		update();   // 先数据更新
+		render();   // 后渲染更新
+	}
+
+	loop();
+
+</script>
+</html>
