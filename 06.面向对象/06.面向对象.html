@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+    <title>06.面向对象</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+
+    <script src="../lib/lib.js"></script>
+</head>
+<body>
+<img id="bird" src="../images/bird/bird_01.png">
+</body>
+
+<script>
+	class Bird extends GameObject {
+
+		speed;  // bird的速度 每次移动多少距离
+
+		constructor(id, speed) {
+			super(id);
+			this.speed = speed; // 保存speed
+			this.setPosition(150, 150); // 给个默认位置
+		}
+
+		update() {
+			super.update();
+
+			const { top, left } = this.getPosition();
+			const speed = this.speed;
+
+			// 计算新的top
+			if (top !== clickPos.top) {
+				const dis = clickPos.top - top; // 计算差值
+				const dir = dis > 0 ? 1 : -1;  // 计算在top上移动的方向 1 正向移动 或 -1 反向移动;
+
+				// 如果速度过快，本次移动直接过头了(即差值<速度)，就直接移动到指定top
+				if (Math.abs(dis) < speed) {
+					this.transform.position.top = clickPos.top;
+				} else {
+					this.transform.position.top = top + dir * speed;    // 计算新的top，新的位置 = 之前的位置 + 方向 * 速度
+				}
+			}
+
+			// 用相同的方式计算left
+			if (left !== clickPos.left) {
+				const dis = clickPos.left - left;
+				const dir = dis > 0 ? 1 : -1;
+
+				if (Math.abs(dis) < speed) {
+					this.transform.position.left = clickPos.left;
+				} else {
+					this.transform.position.left = left + dir * speed;
+				}
+			}
+		}
+	}
+</script>
+
+<script>
+	const clickPos = { // 鼠标点击的位置 bird将要的到达的位置
+		top: 150,
+		left: 150,
+	}
+
+	const bird = new Bird("bird", 15);
+
+	// 使用mousedown监听鼠标按下，并获得鼠标点击的位置
+	const mouseDown = (e) => {
+		// 记录bird将要到达的位置，使用动画慢慢到达
+		clickPos.top = e.clientY;
+		clickPos.left = e.clientX;
+	}
+	document.addEventListener('mousedown', mouseDown);
+
+	/**
+	 * 计算Bird的位置(数据更新)
+	 */
+	function update() {
+		bird.update();
+	}
+
+	/**
+	 * 更新显示对象位置(渲染)
+	 */
+	function render() {
+		bird.render();
+	}
+
+	function loop() {
+		requestAnimationFrame(loop);    // 循环调用requestAnimationFrame
+		update();   // 先数据更新
+		render();   // 后渲染更新
+	}
+
+	loop();
+
+</script>
+</html>
