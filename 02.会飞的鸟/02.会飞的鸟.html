@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+    <title>02.会飞的鸟</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #bird {
+            /* 大小 */
+            width: 50px;
+            height: 50px;
+
+            /* 颜色 */
+            background-color: #f00;
+
+            /* 位置 */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+
+            /* 旋转、缩放等属性 */
+            transform: scale(1, 1) rotate(45deg);
+
+            /* 锚点 */
+            transform-origin: center;
+
+            /* 动画 */
+            animation: bird-fly 5s infinite;
+        }
+
+        @keyframes bird-fly {
+            0% {
+                top: 50%;
+                transform: scale(1, 1) rotate(45deg)
+            }
+            50% {
+                top: 30%;
+                transform: scale(1, 1) rotate(45deg)
+            }
+            100% {
+                top: 50%;
+                transform: scale(1, 1) rotate(45deg)
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="bird"></div>
+</body>
+</html>
