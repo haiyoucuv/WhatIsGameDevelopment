@@ -31,7 +31,6 @@
 	}
 </script>
 <script>
-
 	/**
 	 * Bird
 	 */
@@ -120,24 +119,6 @@
 </script>
 
 <script>
-
-    /**
-     * 异步加载图片方法
-     * @param src 图片路径
-     * @returns {Promise<HTMLImageElement | null>}
-     */
-	function loadImgAsync(src) {
-		return new Promise((resolve) => {
-			const img = new Image();
-			img.onload = () => resolve(img);
-			img.onerror = () => {
-				console.error(`加载资源${src}失败`);
-				resolve(null);
-			};
-			img.src = src;
-		});
-	}
-
     /**
      * FlppyBird
      */
