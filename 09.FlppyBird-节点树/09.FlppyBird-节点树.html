@@ -117,19 +117,21 @@
     /**
      * FlppyBird
      */
-	class FlppyBird extends GameStage {
+    class FlppyBird extends GameStage {
 
-		bird;
+	    bird;
+	    bgMgr;
+	    landMgr;
 
-		async preloadRes() {
-			const path = "../images/bird/";
+	    async preloadRes() {
+		    const path = "../images/bird/";
 
-			const promises = [
-				"bird_01.png", "bird_02.png", "bird_03.png", "pie.png",
-				"land.png", "background.png", "start_button.png"
-			].map((v) => {
-				return loadImgAsync(`${path}${v}`);
-			});
+		    const promises = [
+			    "bird_01.png", "bird_02.png", "bird_03.png", "pie.png",
+			    "land.png", "background.png", "start_button.png"
+		    ].map((v) => {
+			    return loadImgAsync(`${path}${v}`);
+		    });
 
 			return Promise.all(promises);
 		}
@@ -141,12 +143,12 @@
 			// 创建背景
 			const bg1 = new Sprite("../images/bird/background.png");
 			const bg2 = new Sprite("../images/bird/background.png");
-			const bgMgr = new ScrollMgr(bg1, bg2, 2);
+			const bgMgr = this.bgMgr = new ScrollMgr(bg1, bg2, 2);
 
 			// 创建地面
 			const land1 = new Sprite("../images/bird/land.png");
 			const land2 = new Sprite("../images/bird/land.png");
-			const landMgr = new ScrollMgr(land1, land2, 5);
+			const landMgr = this.landMgr = new ScrollMgr(land1, land2, 5);
 
 			this.addChild(bgMgr);
 			this.addChild(landMgr);
