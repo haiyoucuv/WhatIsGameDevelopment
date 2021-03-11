@@ -205,6 +205,9 @@
 	class FlppyBird extends GameStage {
 
 		bird;
+		bgMgr;
+		landMgr;
+		pieMgr;
 
 		async preloadRes() {
 			const path = "../images/bird/";
@@ -226,14 +229,14 @@
 			// 创建背景
 			const bg1 = new Sprite("../images/bird/background.png");
 			const bg2 = new Sprite("../images/bird/background.png");
-			const bgMgr = new ScrollMgr(bg1, bg2, 2);
+			const bgMgr = this.bgMgr = new ScrollMgr(bg1, bg2, 2);
 
 			// 创建地面
 			const land1 = new Sprite("../images/bird/land.png");
 			const land2 = new Sprite("../images/bird/land.png");
-			const landMgr = new ScrollMgr(land1, land2, 4);
+			const landMgr = this.landMgr = new ScrollMgr(land1, land2, 4);
 
-			const pieMgr = new PieMgr(4, 1000); // 创建PieMgr
+			const pieMgr = this.pieMgr = new PieMgr(4, 1000); // 创建PieMgr
 
 			this.addChild(bgMgr);
 			this.addChild(pieMgr);   // 加在背景和地面的中间
