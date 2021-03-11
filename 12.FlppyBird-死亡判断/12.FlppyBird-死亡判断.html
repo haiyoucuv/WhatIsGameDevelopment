@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+    <title>12.FlppyBird-死亡判断</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+
+    <script src="../lib/flppyBirdLib.js"></script>
+</head>
+<body>
+</body>
+
+<script>
+	/**
+	 * 屏幕宽高
+	 * @type {{width: number, height: number}}
+	 */
+	const winSize = {
+		width: document.body.clientWidth,
+		height: document.body.clientHeight,
+	}
+</script>
+<script>
+	/**
+	 * Bird
+	 */
+	class Bird extends Sprite {
+
+		speed;  // bird的速度 每次移动多少距离
+
+		gravity;    // 重力加速度
+
+		dieLine; // 死亡线
+
+		constructor(gravity = 0.2, speed = 0) {
+			super("../images/bird/bird_01.png");
+			this.speed = speed; // 保存speed
+			this.gravity = gravity; // 保存gravity
+		}
+
+		ready() {
+			super.ready();
+
+			// 放到合适的位置
+			const { width, height } = this.size;
+			this.top = (winSize.height - height) / 2 - 100;
+			this.left = (winSize.width - width) / 2;
+		}
+
+		update() {
+			super.update();
+
+			// v = v0 + a * t²
+			this.speed += this.gravity; // 速度 = 速度 + 加速度 * 时间²
+
+			let top = this.top + this.speed;  // 更新位置
+
+			// dieLine 因为锚点在左上角所以dieLine应该减去自己的高度
+			const dieLine = this.dieLine - this.size.height;
+
+			// 如果大于dieLine了就停在dieLine
+			if (top > dieLine) {
+				top = dieLine;
+				// 发送死亡事件
+				const event = new Event("playerDie");
+				event.data = "坠机了，你死了";
+				document.dispatchEvent(event);
+			}
+
+			this.top = top;
+
+		}
+
+	}
+
+	/**
+	 * 滚动器
+	 */
+	class ScrollMgr extends GameObject {
+
+		speed; // 滚动速度
+		bg1;    // bg1
+		bg2;    // bg2
+
+		constructor(bg1, bg2, speed = 5) {
+			super();
+			this.bg1 = bg1;
+			this.bg2 = bg2;
+			this.speed = speed;
+
+			this.addChild(this.bg1);
+			this.addChild(this.bg2);
+		}
+
+		ready() {
+			super.ready();
+			this.bg1.top = winSize.height - this.bg1.size.height; // 放在底部
+			this.bg2.top = winSize.height - this.bg2.size.height; // 放在底部
+		}
+
+		update() {
+			super.update();
+			// 获取一些参数
+			let bg1Left = this.bg1.left;
+			const bg1Width = this.bg1.size.width;
+
+			// 计算位置
+			bg1Left -= this.speed;  // 计算位置
+			this.bg1.left = bg1Left;    // 设置bg1的位置
+			this.bg2.left = bg1Left + this.bg1.size.width;  // bg2跟在bg1后面
+
+			// 如果超出屏幕则交换bg1和bg2，为了做到循环滚动
+			if (bg1Left <= -bg1Width) {
+				const temp = this.bg1;
+				this.bg1 = this.bg2;
+				this.bg2 = temp;
+			}
+		}
+	}
+</script>
+
+<script>
+	/**
+	 * Pie
+	 */
+	class Pie extends GameObject {
+		up;     // 钢管上部分
+		down;   // 钢管下部分
+
+		constructor() {
+			super();
+			this.up = this.addChild(new Sprite("../images/bird/pie.png"));
+			this.down = this.addChild(new Sprite("../images/bird/pie.png"));
+		}
+
+		/**
+		 * 注意此函数非真正的ready函数，在被addChild的时候都会执行一次
+		 */
+		ready() {
+			super.ready();
+
+			// 随机中间的距离
+			const dis = Math.random() * 80 + 100;
+			this.down.top = this.up.size.height + dis;
+		}
+
+		// 这里重写一下size，因为子节点使用绝对定位的不计算入包围盒内，真尴尬
+		get size() {
+			return {
+				width: this.up.size.width,
+				height: this.down.top + this.down.size.height
+			}
+		}
+	}
+
+	/**
+	 * PieMgr
+	 */
+	class PieMgr extends GameObject {
+
+		pieArr = []; // 所有的Pie
+		speed; // Pie移动的速度
+		delay; // 添加Pie的延时
+
+		bird;   // 玩家
+
+		constructor(speed, delay, bird) {
+			super();
+			this.speed = speed;
+			this.delay = delay;
+			this.bird = bird;
+		}
+
+		ready() {
+			super.ready();
+
+			// 创建计时器来固定时间创建Pie
+			setInterval(() => this.createPie(), this.delay);
+		}
+
+		/**
+		 * 创建Pie
+		 */
+		createPie() {
+			// 使用对象池 如果对象池中取不到，说明对象池空了，需要新创建
+			const pie = ObjectPool.get("pie") || new Pie();
+			this.addChild(pie);
+			this.pieArr.push(pie);  // 加入列表统一管理
+			pie.top = Math.random() * -150; // 高度随机
+			pie.left = winSize.width;   // 从屏幕左边出现
+		}
+
+		update() {
+			super.update();
+
+			// 移动
+			// 所有的Pie同时向左移动
+			const { speed, pieArr } = this;
+			pieArr.forEach((pie) => {
+				pie.left -= speed;
+				if (pie.left <= -pie.size.width) {  // 如果移出屏幕
+					this.pieArr.splice(this.pieArr.indexOf(pie), 1);    // 从托管列表里移除
+					this.removeChild(pie);                              // 从子节点移除
+					ObjectPool.put("pie", pie);                         // 加入对象池
+					return;
+				}
+
+				// 检查碰撞
+				// 重构盒子，因为pie.up和pie.down的坐标是相对于pie的，所以要重构正方形的left和top
+				const pieUpBox = {
+					left: pie.left,
+					top: pie.top + pie.up.top,
+					size: pie.up.size,
+				}
+
+				const pieDownBox = {
+					left: pie.left,
+					top: pie.top + pie.down.top,
+					size: pie.down.size,
+				}
+				if (boxCollisionTest(this.bird, pieUpBox) || boxCollisionTest(this.bird, pieDownBox)) {
+					// 发送死亡事件
+					const event = new Event("playerDie");
+					event.data = "撞到障碍，你死了";
+					document.dispatchEvent(event);
+				}
+			});
+		}
+	}
+</script>
+
+<script>
+	/**
+	 * FlppyBird
+	 */
+	class FlppyBird extends GameStage {
+
+		bird;
+		bgMgr;
+		landMgr;
+		pieMgr;
+
+		pause = false;
+
+		async preloadRes() {
+			const path = "../images/bird/";
+
+			const promises = [
+				"bird_01.png", "bird_02.png", "bird_03.png", "pie.png",
+				"land.png", "background.png", "start_button.png"
+			].map((v) => {
+				return loadImgAsync(`${path}${v}`);
+			});
+
+			return Promise.all(promises);
+		}
+
+		async ready() {
+
+			// 创建背景
+			const bg1 = new Sprite("../images/bird/background.png");
+			const bg2 = new Sprite("../images/bird/background.png");
+			const bgMgr = this.bgMgr = new ScrollMgr(bg1, bg2, 2);
+
+			// 创建地面
+			const land1 = new Sprite("../images/bird/land.png");
+			const land2 = new Sprite("../images/bird/land.png");
+			const landMgr = this.landMgr = new ScrollMgr(land1, land2, 4);
+
+			// 创建鸟
+			const bird = this.bird = new Bird();
+
+			// 创建PieMgr
+			const pieMgr = this.pieMgr = new PieMgr(4, 1000, bird);
+
+			this.addChild(bgMgr);
+			this.addChild(pieMgr);   // 加在背景和地面的中间
+			this.addChild(landMgr);
+			this.addChild(bird);
+
+			// 死亡线
+			bird.dieLine = winSize.height - land1.size.height;
+
+			// 将背景放在地面的上面，因为默认top是0，子节点在内部定位在底部，所以只需要把背景定位在负的land的高度就可以了
+			bgMgr.top = -land1.size.height;
+
+			// 使用mousedown监听鼠标按下，并获得鼠标点击的位置
+			document.addEventListener("mousedown", this.mouseDown);
+			document.addEventListener("playerDie", this.pauseGame);
+		}
+
+		update() {
+			if (this.pause) return;
+			super.update();
+		}
+
+		pauseGame = (e) => {
+			console.error(e.data);
+			this.pause = true;
+		}
+
+		mouseDown = () => {
+			this.bird.speed = -8;
+		}
+
+		destroy() {
+			super.destroy();
+			document.removeEventListener("playerDie", this.mouseDown);
+			document.removeEventListener("playerDie", this.pauseGame);
+		}
+
+	}
+
+	// 创建游戏实例
+	new FlppyBird();
+</script>
+
+</html>
