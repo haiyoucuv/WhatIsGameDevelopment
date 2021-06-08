@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6c702afd-70dc-432d-9640-09d64ceaafcb" name="默认变更列表" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/00.前言/00.前言.md" beforeDir="false" afterPath="$PROJECT_DIR$/00.前言/00.前言.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/04.高性能鸟/04.高性能鸟.md" beforeDir="false" afterPath="$PROJECT_DIR$/04.高性能鸟/04.高性能鸟.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/08.FlppyBird-模拟重力/08.FlppyBird-模拟重力.md" beforeDir="false" afterPath="$PROJECT_DIR$/08.FlppyBird-模拟重力/08.FlppyBird-模拟重力.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,11 +35,23 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1623142310502</updated>
-      <workItem from="1623142311711" duration="9000" />
+      <workItem from="1623142311711" duration="1628000" />
     </task>
+    <task id="LOCAL-00001" summary="错别字一个，谢强哥">
+      <created>1623142375379</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1623142375379</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="错别字一个，谢强哥" />
+    <option name="LAST_COMMIT_MESSAGE" value="错别字一个，谢强哥" />
   </component>
 </project>
