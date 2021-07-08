@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="6c702afd-70dc-432d-9640-09d64ceaafcb" name="默认变更列表" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/04.高性能鸟/04.高性能鸟.md" beforeDir="false" afterPath="$PROJECT_DIR$/04.高性能鸟/04.高性能鸟.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/08.FlppyBird-模拟重力/08.FlppyBird-模拟重力.md" beforeDir="false" afterPath="$PROJECT_DIR$/08.FlppyBird-模拟重力/08.FlppyBird-模拟重力.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +33,10 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1623142310502</updated>
-      <workItem from="1623142311711" duration="1628000" />
+      <workItem from="1623142311711" duration="2262000" />
+      <workItem from="1625747020134" duration="10000" />
+      <workItem from="1625747043486" duration="18000" />
+      <workItem from="1625747069175" duration="391000" />
     </task>
     <task id="LOCAL-00001" summary="错别字一个，谢强哥">
       <created>1623142375379</created>
@@ -44,13 +45,22 @@
       <option name="project" value="LOCAL" />
       <updated>1623142375379</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="错别字一个，谢强哥">
+      <created>1623143954656</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1623143954656</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="错别字一个，谢强哥" />
     <option name="LAST_COMMIT_MESSAGE" value="错别字一个，谢强哥" />
   </component>
